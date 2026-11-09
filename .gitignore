@@ -1,0 +1,19 @@
+# Executaveis
+*.exe
+reservas
+gerador
+benchmark
+/test_*
+
+# Objetos e build
+*.o
+*.obj
+build/
+
+# Dados grandes gerados para o benchmark
+data/grande*.csv
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store

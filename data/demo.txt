@@ -1,0 +1,17 @@
+# Roteiro de demonstracao da CLI (make demo, ou: reservas -e < data/demo.txt)
+carregar data/exemplo_com_erros.csv
+recursos
+reservar Sala1 2026-11-16 10:00 11:00 Esdras
+reservar Sala1 2026-11-16 09:30 10:30 "Anna Clara"
+conflito Sala1 2026-11-16 09:00 +30
+conflito Sala1 2026-11-16 09:30 09:45
+reservar Sala1 2026-11-16 23:00 +120 Plantao
+listar Sala1 2026-11-16 2026-11-17
+livre Sala1 2026-11-16 08:00 60
+cancelar 1
+livre Sala1 2026-11-16 08:00 60
+reservar Sala1 2026-11-16 12:00 11:00 Invalida
+reservar Sala1 2026-02-30 10:00 11:00 Invalida
+listar * 2026-11-16
+recursos
+sair

@@ -17,3 +17,11 @@ data/grande*.csv
 .vscode/
 .idea/
 .DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+.vs/
+
+# Python (scripts/graficos.py)
+__pycache__/

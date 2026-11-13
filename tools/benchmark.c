@@ -14,10 +14,26 @@
  *   gcc -Wall -Wextra -std=c11 -O2 -Isrc -o benchmark tools/benchmark.c \
  *       src/agenda.c src/agenda_avl.c src/agenda_rb.c
  */
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include "agenda.h"
+
+/* Gerador pseudoaleatorio de 32 bits (xorshift32). Nao usamos rand(): no
+   Windows ele vai so ate RAND_MAX = 32767, entao "rand() % (n*PASSO)" so
+   sortearia inicios entre 0 e 32767 (as consultas cairiam todas no comeco
+   da agenda) e o embaralhamento de 100000 reservas ficaria viciado. */
+static uint32_t estado_aleatorio = 1;
+static void semear(unsigned semente) {
+    estado_aleatorio = semente * 2654435761u + 0x9E3779B9u;
+    if (estado_aleatorio == 0) estado_aleatorio = 1;
+}
+static uint32_t aleatorio(void) {
+    uint32_t x = estado_aleatorio;
+    x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+    return estado_aleatorio = x;
+}
 
 #define LIMIAR_CLOCKS (CLOCKS_PER_SEC / 20)   /* ~50 ms por medicao, para precisao */
 #define PASSO 100                              /* espacamento entre reservas */
@@ -40,11 +56,11 @@ static Reserva nova(int id, long inicio, long dur) {
 
 /* Gera n reservas sem conflito e embaralha a ordem (Fisher-Yates). */
 static void gerar(Reserva *v, int n, unsigned semente) {
-    srand(semente);
+    semear(semente);
     for (int i = 0; i < n; i++)
-        v[i] = nova(i + 1, (long)i * PASSO, 1 + rand() % (PASSO - 1));
+        v[i] = nova(i + 1, (long)i * PASSO, 1 + (long)(aleatorio() % (PASSO - 1)));
     for (int i = n - 1; i > 0; i--) {
-        int j = rand() % (i + 1);
+        int j = (int)(aleatorio() % (uint32_t)(i + 1));
         Reserva tmp = v[i]; v[i] = v[j]; v[j] = tmp;
     }
 }
@@ -110,11 +126,11 @@ int main(int argc, char *argv[]) {
         /* consultas aleatorias dentro do intervalo coberto [0, n*PASSO) */
         long *qi = malloc((size_t)M_CONSULTAS * sizeof(long));
         long *qf = malloc((size_t)M_CONSULTAS * sizeof(long));
-        srand(semente + 1);
+        semear(semente + 1);
         for (int i = 0; i < M_CONSULTAS; i++) {
-            long ini = rand() % ((long)n * PASSO);
+            long ini = (long)(aleatorio() % (uint32_t)((long)n * PASSO));
             qi[i] = ini;
-            qf[i] = ini + 1 + rand() % 50;
+            qf[i] = ini + 1 + (long)(aleatorio() % 50);
         }
 
         ResIns ia = medir_insercao(agenda_criar_avl, res, n);

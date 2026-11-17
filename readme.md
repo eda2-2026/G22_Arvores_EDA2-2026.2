@@ -189,3 +189,9 @@ remover custariam O(n).
   inválidas) e validação do modelo.
 - `test_csv`: divisão de campos com aspas, `Sistema` com vários recursos e ids,
   carga com 7 tipos de linha inválida e o ciclo salvar → recarregar.
+
+## Vídeo de apresentação
+
+
+
+[![T3 - G22 -- Árvores](https://img.youtube.com/vi/ODUP8-bnGgw/maxresdefault.jpg)](https://www.youtube.com/watch?v=ODUP8-bnGgw)
